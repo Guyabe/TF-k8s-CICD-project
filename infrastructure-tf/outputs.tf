@@ -11,7 +11,7 @@ output "private_subnets" {
 }
 
 output "kind_cluster_instance_id" {
-  value = module.kind_cluster_instance.instance_id
+  value = module.kind_cluster_instance.id
 }
 
 output "kind_cluster_instance_public_ip" {
