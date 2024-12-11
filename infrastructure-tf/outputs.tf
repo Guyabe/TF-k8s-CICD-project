@@ -9,3 +9,11 @@ output "public_subnets" {
 output "private_subnets" {
   value = module.vpc.private_subnets
 }
+
+output "kind_cluster_instance_id" {
+  value = module.kind_cluster_instance.instance_id
+}
+
+output "kind_cluster_instance_public_ip" {
+  value = module.kind_cluster_instance.public_ip
+}

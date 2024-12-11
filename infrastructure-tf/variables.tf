@@ -1,9 +1,9 @@
 variable "aws_region" {
   default     = "us-east-1"
   description = "AWS region where resources will be deployed"
-}v
+}
 
-ariable "availability_zones" {
+variable "availability_zones" {
   type = list(string)
   default = ["us-east-1a", "us-east-1b"]
   description = "The Project AZs"
@@ -39,4 +39,9 @@ variable "vpc_name" {
 variable "project_name" {
   default     = "final-project"
   description = "The Project VPC name"
+}
+
+variable "key_name" {
+  default     = "vockey"
+  description = "Our Technion allowed lab key"
 }
