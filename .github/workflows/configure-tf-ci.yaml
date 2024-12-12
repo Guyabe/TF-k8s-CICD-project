@@ -17,7 +17,7 @@ env:
 
 jobs:
   terraform-plan:
-    runs-on: terraformcd
+    runs-on: self-hosted
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -59,7 +59,7 @@ jobs:
 
   manual-approval:
     needs: terraform-plan
-    runs-on: terraformcd
+    runs-on: self-hosted
     outputs:
       status: ${{ steps.approval.outputs.status }} # Pass step output to job output
     steps:
@@ -78,7 +78,7 @@ jobs:
   terraform-apply:
     needs: manual-approval
     if: needs.manual-approval.outputs.status == 'approved'
-    runs-on: terraformcd
+    runs-on: self-hosted
     steps:
       - name: Download Plan Artifact
         uses: actions/download-artifact@v3
