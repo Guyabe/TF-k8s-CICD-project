@@ -60,6 +60,8 @@ jobs:
   manual-approval:
     needs: terraform-plan
     runs-on: terraformcd
+    outputs:
+      status: ${{ steps.approval.outputs.status }} # Pass step output to job output
     steps:
       - name: Await User Input
         id: approval
@@ -75,7 +77,7 @@ jobs:
 
   terraform-apply:
     needs: manual-approval
-    if: steps.approval.outputs.status == 'approved'
+    if: needs.manual-approval.outputs.status == 'approved'
     runs-on: terraformcd
     steps:
       - name: Download Plan Artifact
