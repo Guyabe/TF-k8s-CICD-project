@@ -31,18 +31,18 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Install Docker
+      - name: Set Docker
         run: |
-          sudo apt-get update -y || sudo yum update -y
-          sudo apt-get install -y docker.io || sudo yum install -y docker
-          sudo systemctl start docker || sudo service docker start
-          sudo usermod -aG docker $USER
-          docker --version
+          sudo yum update -y
+          sudo yum install docker -y
+          sudo service docker start
+          sudo usermod -a -G docker ec2-user
+          newgrp docker
 
       - name: Install Git
         run: |
-          sudo apt-get update -y || sudo yum update -y
-          sudo apt-get install -y git || sudo yum install -y git
+          sudo yum update -y
+          sudo yum install git -y
           git --version
 
       - name: Set up Node.js
@@ -77,13 +77,13 @@ jobs:
     needs: terraform-plan
     runs-on: self-hosted
     steps:
-      - name: Install Docker
+      - name: Set Docker
         run: |
-          sudo apt-get update -y || sudo yum update -y
-          sudo apt-get install -y docker.io || sudo yum install -y docker
-          sudo systemctl start docker || sudo service docker start
-          sudo usermod -aG docker $USER
-          docker --version
+          sudo yum update -y
+          sudo yum install docker -y
+          sudo service docker start
+          sudo usermod -a -G docker ec2-user
+          newgrp docker
 
       - uses: trstringer/manual-approval@v1
         with:
@@ -100,13 +100,13 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Install Docker
+      - name: Set Docker
         run: |
-          sudo apt-get update -y || sudo yum update -y
-          sudo apt-get install -y docker.io || sudo yum install -y docker
-          sudo systemctl start docker || sudo service docker start
-          sudo usermod -aG docker $USER
-          docker --version
+          sudo yum update -y
+          sudo yum install docker -y
+          sudo service docker start
+          sudo usermod -a -G docker ec2-user
+          newgrp docker
 
       - name: Download Plan Artifact
         uses: actions/download-artifact@v3
@@ -115,8 +115,8 @@ jobs:
 
       - name: Install Git
         run: |
-          sudo apt-get update -y || sudo yum update -y
-          sudo apt-get install -y git || sudo yum install -y git
+          sudo yum update -y
+          sudo yum install git -y
           git --version
 
       - name: Set up Node.js
