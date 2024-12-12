@@ -31,6 +31,14 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - name: Install Docker
+        run: |
+          sudo apt-get update -y || sudo yum update -y
+          sudo apt-get install -y docker.io || sudo yum install -y docker
+          sudo systemctl start docker || sudo service docker start
+          sudo usermod -aG docker $USER
+          docker --version
+
       - name: Install Git
         run: |
           sudo apt-get update -y || sudo yum update -y
@@ -69,6 +77,14 @@ jobs:
     needs: terraform-plan
     runs-on: self-hosted
     steps:
+      - name: Install Docker
+        run: |
+          sudo apt-get update -y || sudo yum update -y
+          sudo apt-get install -y docker.io || sudo yum install -y docker
+          sudo systemctl start docker || sudo service docker start
+          sudo usermod -aG docker $USER
+          docker --version
+
       - uses: trstringer/manual-approval@v1
         with:
           secret: ${{ secrets.TERRAFORMCD }}
@@ -84,6 +100,14 @@ jobs:
     permissions:
       contents: read
     steps:
+      - name: Install Docker
+        run: |
+          sudo apt-get update -y || sudo yum update -y
+          sudo apt-get install -y docker.io || sudo yum install -y docker
+          sudo systemctl start docker || sudo service docker start
+          sudo usermod -aG docker $USER
+          docker --version
+
       - name: Download Plan Artifact
         uses: actions/download-artifact@v3
         with:
