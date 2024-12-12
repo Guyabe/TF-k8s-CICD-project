@@ -49,5 +49,5 @@ variable "key_name" {
 variable "bucket_name" {
   description = "The name of the S3 bucket"
   type        = string
-  default     = "my-s3-bucket-asdasdakjb2aksd"
+  default     = "my-s3-bucket-for-ui-temp-images"
 }
