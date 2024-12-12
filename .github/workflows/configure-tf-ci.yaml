@@ -5,11 +5,18 @@ on:
   push:
     paths:
       - 'infrastructure-tf/**' # Trigger only when changes occur in this folder
-  workflow_dispatch: # Allow manual trigger
+  workflow_dispatch: # Allow manual triggering
     inputs:
-      approval_comment:
-        description: "Manually triggering the job"
-        required: false
+      TF_LOG:
+        description: "Run Terraform in log mode"
+        required: true
+        type: choice
+        options:
+          - "DEBUG"
+          - "INFO"
+          - "WARN"
+          - "ERROR"
+        default: "INFO"
 
 env:
   TF_VERSION: "1.5.7"
@@ -18,27 +25,16 @@ env:
 jobs:
   terraform-plan:
     runs-on: self-hosted
+    permissions:
+      contents: read
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Restore Terraform Cache
-        id: cache-terraform
-        uses: actions/cache@v3
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
         with:
-          path: /usr/local/bin/terraform
-          key: terraform-${{ env.TF_VERSION }}
-          restore-keys: terraform-
-
-      - name: Install Terraform (if not cached)
-        if: steps.cache-terraform.outputs.cache-hit != 'true'
-        run: |
-          wget https://releases.hashicorp.com/terraform/${{ env.TF_VERSION }}/terraform_${{ env.TF_VERSION }}_linux_amd64.zip
-          unzip terraform_${{ env.TF_VERSION }}_linux_amd64.zip -d /usr/local/bin/
-          rm terraform_${{ env.TF_VERSION }}_linux_amd64.zip
-
-      - name: Verify Terraform Installation
-        run: terraform -version
+          terraform_version: ${{ env.TF_VERSION }}
 
       - name: Terraform Init
         working-directory: infrastructure-tf
@@ -49,6 +45,7 @@ jobs:
         run: terraform plan -out=tfplan -input=false
         env:
           AWS_REGION: ${{ env.AWS_REGION }}
+          TF_LOG: ${{ inputs.TF_LOG }}
 
       - name: Upload Plan Artifact
         uses: actions/upload-artifact@v3
@@ -60,50 +57,32 @@ jobs:
   manual-approval:
     needs: terraform-plan
     runs-on: self-hosted
-    outputs:
-      status: ${{ steps.approval.outputs.status }} # Pass step output to job output
     steps:
-      - name: Await User Input
-        id: approval
-        uses: actions/github-script@v6
+      - uses: trstringer/manual-approval@v1
         with:
-          script: |
-            const core = require('@actions/core');
-            const userInput = prompt("Type 'approved' to continue or anything else to cancel:");
-            if (userInput !== 'approved') {
-              throw new Error("Approval denied by user.");
-            }
-            core.setOutput('status', 'approved');
+          secret: ${{ secrets.TERRAFORMCD }}
+          approvers: ${{ vars.INPUT_APPROVERS }}
+          minimum-approvals: 1
+          issue-title: "Terraform Apply Approval Request"
+          issue-body: "Please approve or deny the terraform apply command"
 
   terraform-apply:
     needs: manual-approval
-    if: needs.manual-approval.outputs.status == 'approved'
+    if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
     runs-on: self-hosted
+    permissions:
+      contents: read
     steps:
       - name: Download Plan Artifact
         uses: actions/download-artifact@v3
         with:
           name: terraform-plan
 
-      - name: Restore Terraform Cache
-        id: cache-terraform
-        uses: actions/cache@v3
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
         with:
-          path: /usr/local/bin/terraform
-          key: terraform-${{ env.TF_VERSION }}
-          restore-keys: terraform-
-
-      - name: Install Terraform (if not cached)
-        if: steps.cache-terraform.outputs.cache-hit != 'true'
-        run: |
-          mkdir -p ./terraform-bin
-          wget https://releases.hashicorp.com/terraform/${{ env.TF_VERSION }}/terraform_${{ env.TF_VERSION }}_linux_amd64.zip
-          unzip terraform_${{ env.TF_VERSION }}_linux_amd64.zip -d ./terraform-bin/
-          rm terraform_${{ env.TF_VERSION }}_linux_amd64.zip
-          echo "${{ github.workspace }}/terraform-bin" >> $GITHUB_PATH # Add to PATH
-
-      - name: Verify Terraform Installation
-        run: terraform -version
+          terraform_version: ${{ env.TF_VERSION }}
+          TF_LOG: ${{ inputs.TF_LOG }}
 
       - name: Terraform Apply
         working-directory: infrastructure-tf
