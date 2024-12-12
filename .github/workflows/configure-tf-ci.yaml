@@ -31,10 +31,16 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - name: Install Git
+        run: |
+          sudo apt-get update -y || sudo yum update -y
+          sudo apt-get install -y git || sudo yum install -y git
+          git --version
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '14' # Ensure compatibility with Terraform dependencies
+          node-version: '14'
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
@@ -83,10 +89,16 @@ jobs:
         with:
           name: terraform-plan
 
+      - name: Install Git
+        run: |
+          sudo apt-get update -y || sudo yum update -y
+          sudo apt-get install -y git || sudo yum install -y git
+          git --version
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '14' # Ensure compatibility with Terraform dependencies
+          node-version: '14'
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
