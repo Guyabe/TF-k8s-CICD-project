@@ -1,5 +1,5 @@
 name: Terraform GitOps Workflow
-run-name: TerraformCD
+run-name: Deploy Terraform Structure Over AWS
 
 on:
   push:
