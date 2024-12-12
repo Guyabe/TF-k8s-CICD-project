@@ -96,12 +96,11 @@ jobs:
       - name: Install Terraform (if not cached)
         if: steps.cache-terraform.outputs.cache-hit != 'true'
         run: |
-          mkdir -p $HOME/bin
+          mkdir -p ./terraform-bin
           wget https://releases.hashicorp.com/terraform/${{ env.TF_VERSION }}/terraform_${{ env.TF_VERSION }}_linux_amd64.zip
-          unzip terraform_${{ env.TF_VERSION }}_linux_amd64.zip -d $HOME/bin/
+          unzip terraform_${{ env.TF_VERSION }}_linux_amd64.zip -d ./terraform-bin/
           rm terraform_${{ env.TF_VERSION }}_linux_amd64.zip
-          echo "$HOME/bin" >> $GITHUB_PATH # Add the binary location to PATH
-      
+          echo "${{ github.workspace }}/terraform-bin" >> $GITHUB_PATH # Add to PATH
 
       - name: Verify Terraform Installation
         run: terraform -version
