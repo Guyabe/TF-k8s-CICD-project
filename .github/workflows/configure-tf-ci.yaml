@@ -29,7 +29,30 @@ env:
   AWS_REGION: "us-east-1"
 
 jobs:
+  setup-runner:
+    runs-on: self-hosted
+    steps:
+      - name: Install Git
+        run: |
+          sudo yum update -y
+          sudo yum install git -y
+
+      - name: Verify Git Installation
+        run: git --version
+
+      - name: Install Docker
+        run: |
+          sudo yum update -y
+          sudo yum install docker -y
+          sudo service docker start
+          sudo usermod -a -G docker ec2-user
+          sudo chmod 666 /var/run/docker.sock
+
+      - name: Verify Docker Installation
+        run: docker --version
+
   terraform-plan:
+    needs: setup-runner
     runs-on: self-hosted
     permissions:
       contents: read
@@ -42,15 +65,6 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ${{ env.TF_VERSION }}
-
-      - name: Set Docker
-        run: |
-          sudo yum update -y
-          sudo yum install docker -y
-          sudo service docker start
-          sudo usermod -a -G docker ec2-user
-          newgrp docker
-          sudo chmod 666 /var/run/docker.sock
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -90,10 +104,12 @@ jobs:
   terraform-apply:
     needs: manual-approval
     runs-on: self-hosted
-    if: github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main'
     permissions:
       contents: read
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
       - name: Download Plan Artifact
         uses: actions/download-artifact@v3
         with:
@@ -108,7 +124,6 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ${{ env.TF_VERSION }}
-          TF_LOG: ${{ inputs.TF_LOG }}
 
       - name: Terraform Apply
         working-directory: infrastructure-tf
