@@ -1,18 +1,17 @@
 module "s3_bucket" {
-  source = "terraform-aws-modules/s3-bucket/aws"
+  source  = "terraform-aws-modules/s3-bucket/aws"
 
-  bucket = var.bucket_name
-  acl    = "private"
+  bucket  = var.bucket_name
+  acl     = "private"
 
-  # Remove or adjust object ownership control
-  control_object_ownership = false
+  control_object_ownership = true
+  object_ownership         = "ObjectWriter"
 
   versioning = {
     enabled = true
   }
 
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
+  tags = {
+    Name        = var.bucket_name
+  }
 }
