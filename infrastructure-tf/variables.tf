@@ -42,12 +42,12 @@ variable "project_name" {
 }
 
 variable "key_name" {
-  default     = "vockey"
+  default     = "LabRole"
   description = "Our Technion allowed lab key"
 }
 
 variable "bucket_name" {
   description = "The name of the S3 bucket"
   type        = string
-  default     = "my-s3-bucket-for-ui-temp-images"
+  default     = "my-s3-bucket-for-ui-images"
 }
