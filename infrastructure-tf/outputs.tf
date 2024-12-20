@@ -21,7 +21,3 @@ output "kind_cluster_instance_public_ip" {
 output "bucket_name" {
   value = module.s3_bucket.s3_bucket_id
 }
-
-output "bucket_arn" {
-  value = module.s3_bucket.s3_bucket_arn
-}
