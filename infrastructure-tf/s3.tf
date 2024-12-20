@@ -4,8 +4,8 @@ module "s3_bucket" {
   bucket = var.bucket_name
   acl    = "private"
 
-  control_object_ownership = true
-  object_ownership         = "ObjectWriter"
+  # Remove or adjust object ownership control
+  control_object_ownership = false
 
   versioning = {
     enabled = true
