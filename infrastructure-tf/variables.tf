@@ -42,7 +42,7 @@ variable "project_name" {
 }
 
 variable "key_name" {
-  default     = "LabRole"
+  default     = "vockey"
   description = "Our Technion allowed lab key"
 }
 
