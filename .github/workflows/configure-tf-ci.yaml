@@ -115,6 +115,12 @@ jobs:
         with:
           name: tfplan
 
+      - name: Move Plan Artifact
+        run: mv tfplan infrastructure-tf/
+
+      - name: List Files in Directory
+        run: ls -la infrastructure-tf
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
