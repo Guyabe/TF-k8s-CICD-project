@@ -58,11 +58,11 @@ jobs:
           node-version: '14'
 
       - name: Terraform Init
-        working-directory: infra
+        working-directory: infrastructure-tf
         run: terraform init
 
       - name: Terraform Plan
-        working-directory: infra
+        working-directory: infrastructure-tf
         run: terraform plan -out=tfplan -input=false
         env:
           AWS_REGION: ${{ env.AWS_REGION }}
@@ -72,7 +72,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: tfplan
-          path: infra/tfplan
+          path: infrastructure-tf/tfplan
 
   manual-approval:
     needs: terraform-plan
@@ -111,7 +111,7 @@ jobs:
           TF_LOG: ${{ inputs.TF_LOG }}
 
       - name: Terraform Apply
-        working-directory: infra
+        working-directory: infrastructure-tf
         run: terraform apply -input=false tfplan
         env:
           AWS_REGION: ${{ env.AWS_REGION }}
