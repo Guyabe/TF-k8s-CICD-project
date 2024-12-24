@@ -14,3 +14,19 @@ module "kind_cluster_instance" {
     Project     = var.project_name
   }
 }
+
+# EBS Volume for MySQL
+resource "aws_ebs_volume" "mysql_volume" {
+  availability_zone = var.availability_zones
+  size              = var.mysql_volume_size
+  tags = {
+    Name = "MySQL-Volume"
+  }
+}
+
+# Attach EBS Volume to kind_cluster_instance
+resource "aws_volume_attachment" "mysql_attachment" {
+  instance_id = module.kind_cluster_instance.this_ec2_instance_id
+  volume_id   = aws_ebs_volume.mysql_volume.id
+  device_name = "/dev/xvdf"
+}

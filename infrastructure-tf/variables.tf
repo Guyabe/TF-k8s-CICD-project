@@ -46,8 +46,13 @@ variable "key_name" {
   description = "Our Technion allowed lab key"
 }
 
+variable "mysql_volume_size" {
+  default = 20
+  description = "Size of the EBS volume for MySQL (in GB)"
+}
+
 variable "bucket_name" {
   description = "The name of the S3 bucket"
   type        = string
-  default     = "my-s3-bucket-for-ui-images"
+  default     = "my-s3-bucket-for-ui-images1"
 }

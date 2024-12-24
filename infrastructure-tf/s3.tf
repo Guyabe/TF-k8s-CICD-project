@@ -1,48 +1,36 @@
-resource "aws_s3_bucket" "s3_bucket" {
-  bucket             = var.bucket_name
-  object_lock_enabled = false  # Explicitly disable object lock
+# S3 Bucket Resource
+resource "aws_s3_bucket" "photos_bucket" {
+  bucket = var.bucket_name
 
   tags = {
     Name = var.bucket_name
   }
 }
 
-resource "aws_s3_bucket_acl" "s3_bucket" {
-  bucket = aws_s3_bucket.s3_bucket.id
-  acl    = "private"
-}
-
-resource "aws_s3_bucket_versioning" "s3_bucket" {
-  bucket = aws_s3_bucket.s3_bucket.id
-
-  versioning_configuration {
-    status = "Enabled"
-  }
-}
-
-resource "aws_s3_bucket_policy" "s3_bucket" {
-  bucket = aws_s3_bucket.s3_bucket.id
+# IAM Role Policy for S3 Access
+resource "aws_iam_role_policy" "s3_access_policy" {
+  name   = "S3AccessPolicy"
+  role   = "EMR_EC2_DefaultRole"  # Use the existing role name
 
   policy = jsonencode({
-    Version = "2012-10-17",
+    Version = "2012-10-17"
     Statement = [
       {
-        Sid       = "AllowBucketOperations",
-        Effect    = "Allow",
-        Principal = {
-          AWS = "arn:aws:iam::298169470255:role/voclabs"
-        },
-        Action = [
-          "s3:GetBucketObjectLockConfiguration",
-          "s3:PutBucketObjectLockConfiguration",
-          "s3:GetBucketVersioning",
-          "s3:PutBucketVersioning"
-        ],
-        Resource = [
-          "arn:aws:s3:::${aws_s3_bucket.s3_bucket.id}",
-          "arn:aws:s3:::${aws_s3_bucket.s3_bucket.id}/*"
-        ]
+        Effect = "Allow"
+        Action = "s3:PutObject"
+        Resource = "arn:aws:s3:::${var.bucket_name}/*"
+      },
+      {
+        Effect = "Allow"
+        Action = "s3:ListBucket"
+        Resource = "arn:aws:s3:::${var.bucket_name}"
+      },
+      {
+        Effect = "Allow"
+        Action = "s3:GetObject"
+        Resource = "arn:aws:s3:::${var.bucket_name}/*"
       }
     ]
   })
 }
+
