@@ -7,6 +7,7 @@ module "kind_cluster_instance" {
   monitoring              = true
   vpc_security_group_ids  = [aws_security_group.kind_cluster_sg.id]
   subnet_id               = element(module.vpc.public_subnets, 0)
+  associate_public_ip_address = true
 
   tags = {
     Terraform   = "true"
