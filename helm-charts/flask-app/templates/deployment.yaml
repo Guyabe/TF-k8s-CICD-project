@@ -19,8 +19,8 @@ spec:
             - containerPort: 5001
           env:
             - name: S3_BUCKET_NAME
-              value: your-s3-bucket-name
+              value: "{{ .Values.s3.bucketName }}"
             - name: OBJECT_NAME
-              value: your-image-name.png
+              value: "{{ .Values.s3.objectName }}"
             - name: DATABASE_URI
-              value: mysql+pymysql://admin:admin@mysql-db:3306/flask_app
+              value: "{{ .Values.databaseUri }}"
