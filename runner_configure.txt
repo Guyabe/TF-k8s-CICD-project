@@ -8,8 +8,11 @@ tar xzf ./actions-runner-linux-x64-2.321.0.tar.gz
 sudo ./svc.sh install
 sudo ./svc.sh start
 
-
+---------------------------------------------
 # configuring everything on kind app:
+# install git:
+sudo yum install git -y
+
 # helm install:
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 chmod 700 get_helm.sh
@@ -26,7 +29,6 @@ helm install mysql-db bitnami/mysql \
   --set auth.username=admin \
   --set auth.password=admin \
   --set auth.database=flask_app
-
 
 for argocd:
 kubectl create namespace argocd
