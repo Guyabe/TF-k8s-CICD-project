@@ -4,6 +4,7 @@ metadata:
   name: flask-app
   namespace: argocd
 spec:
+  project: default
   source:
     repoURL: 'https://github.com/Guyabe/TF-k8s-CICD-project.git'
     targetRevision: main
