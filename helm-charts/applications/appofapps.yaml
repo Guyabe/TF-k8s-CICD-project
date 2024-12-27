@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/Guyabe/argocd-class1.git'
+    repoURL: 'https://github.com/Guyabe/TF-k8s-CICD-project.git'
     targetRevision: HEAD
     path: helm-charts/applications
   destination:

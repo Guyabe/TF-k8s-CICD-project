@@ -5,7 +5,7 @@ metadata:
 spec:
   type: "{{ .Values.service.type }}"
   ports:
-    - port: 5001
-      targetPort: 5001
+    - port: "{{ .Values.service.port }}"
+      targetPort: "{{ .Values.service.port }}"
   selector:
     app: flask-app
