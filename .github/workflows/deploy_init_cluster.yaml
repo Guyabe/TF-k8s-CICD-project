@@ -67,6 +67,9 @@ jobs:
             - containerPort: 30082
               hostPort: 30082
               protocol: TCP
+            - containerPort: 32371 # Added NodePort for Flask app
+              hostPort: 32371
+              protocol: TCP
           EOF
 
           # Verify cluster
