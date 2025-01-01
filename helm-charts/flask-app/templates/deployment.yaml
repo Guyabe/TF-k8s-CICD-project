@@ -16,7 +16,7 @@ spec:
         - name: flask-app
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports:
-            - containerPort: "{{ .Values.service.port }}"
+            - containerPort: {{ .Values.service.port }}
           env:
             - name: S3_BUCKET_NAME
               value: "{{ .Values.s3.bucketName }}"
