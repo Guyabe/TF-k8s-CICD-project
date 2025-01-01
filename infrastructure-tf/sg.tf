@@ -19,6 +19,14 @@ resource "aws_security_group" "kind_cluster_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # Allow NodePort access for Flask app
+  ingress {
+    from_port   = 32371
+    to_port     = 32371
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   # Allow all egress traffic
   egress {
     from_port   = 0
