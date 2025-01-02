@@ -29,6 +29,11 @@ jobs:
             # Update System (Optional if already done)
             sudo yum update -y
 
+            # Install Git
+            if ! command -v git &> /dev/null; then
+              sudo yum install -y git
+            fi
+
             # Install Helm if not already installed
             if ! command -v helm &> /dev/null; then
               curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
